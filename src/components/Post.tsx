@@ -40,16 +40,6 @@ const Post = (props: { name: string; likes: number; image: string; id: string })
     setTotalLikes(totalLikes + 1);
   };
 
-  const onToggle = () => {
-    if (postColor === 'black') {
-      setPostColor('red');
-      setFontColor('white');
-    } else {
-      setPostColor('black');
-      setFontColor('black');
-    }
-  };
-
   return (
     <Card
       sx={{
@@ -57,13 +47,12 @@ const Post = (props: { name: string; likes: number; image: string; id: string })
         width: 500,
         display: 'flex',
         flexDirection: 'column',
-        margin: 5,
         backgroundColor: '#101010',
         color: fontColor,
         borderBottom: '2px solid #FFFFFF'
       }}
     >
-      <Switch onChange={onToggle} defaultChecked />
+      
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: blue[500] }} aria-label="recipe">

@@ -6,7 +6,7 @@ import CardActions from '@mui/material/CardActions';
 import Avatar from '@mui/material/Avatar';
 import IconButton from '@mui/material/IconButton';
 import Typography from '@mui/material/Typography';
-import { red } from '@mui/material/colors';
+import { red, blue } from '@mui/material/colors';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import { MoreHoriz } from '@mui/icons-material';
@@ -16,9 +16,10 @@ import { Switch } from '@mui/material';
 
 const Post = (props: { name: string; likes: number; image: string; id: string }) => {
   const { id, name, likes, image } = props;
+  const [totalLikes, setTotalLikes] = useState(likes);
   const [color, setColor] = useState<'default' | 'success'>();
-  const [postColor, setPostColor] = useState<'red' | string>();
-  const [fontColor, setFontColor] = useState<'black' | 'white'>()
+  const [postColor, setPostColor] = useState<'red' | 'black'>('black');
+  const [fontColor, setFontColor] = useState<'black' | 'white'>('black');
 
   const mutation = useMutation({
     mutationFn: async () => {
@@ -36,15 +37,16 @@ const Post = (props: { name: string; likes: number; image: string; id: string })
   const onLike = () => {
     mutation.mutate();
     setColor('success');
+    setTotalLikes(totalLikes + 1);
   };
 
   const onToggle = () => {
     if (postColor === 'black') {
-      setPostColor('grey');
-      setFontColor('black')
+      setPostColor('red');
+      setFontColor('white');
     } else {
       setPostColor('black');
-      setFontColor('white')
+      setFontColor('black');
     }
   };
 
@@ -56,22 +58,30 @@ const Post = (props: { name: string; likes: number; image: string; id: string })
         display: 'flex',
         flexDirection: 'column',
         margin: 5,
-        backgroundColor: postColor,
-        color: fontColor
+        backgroundColor: '#101010',
+        color: fontColor,
+        borderBottom: '2px solid #FFFFFF'
       }}
     >
       <Switch onChange={onToggle} defaultChecked />
       <CardHeader
         avatar={
-          <Avatar sx={{ bgcolor: red[500] }} aria-label="recipe">
+          <Avatar sx={{ bgcolor: blue[500] }} aria-label="recipe">
             R
           </Avatar>
         }
         action={
           <IconButton aria-label="settings">
-            <MoreHoriz />
+            <MoreHoriz
+              sx={{
+                color: 'white'
+              }}
+            />
           </IconButton>
         }
+        sx={{
+          color: 'white'
+        }}
         title="Shrimp and Chorizo Paella"
         subheader="September 14, 2016"
       />
@@ -83,7 +93,7 @@ const Post = (props: { name: string; likes: number; image: string; id: string })
         }}
       >
         <CardMedia
-          sx={{ maxWidth: 300, maxHeight: 300 }}
+          sx={{ maxWidth: 300, maxHeight: 300, borderRadius: '20px' }}
           component="img"
           width="700"
           height="500"
@@ -92,14 +102,14 @@ const Post = (props: { name: string; likes: number; image: string; id: string })
         />
       </div>
       <CardContent>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="body2" color="#FFFFFF">
           {name}
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites" onClick={onLike} color={color}>
+        <IconButton aria-label="add to favorites" onClick={onLike} color={color === 'success' ? 'error' : 'default'}>
           <FavoriteIcon />
-          {likes}
+          {totalLikes}
         </IconButton>
         <IconButton aria-label="share">
           <ShareIcon />

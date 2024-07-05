@@ -1,55 +1,86 @@
-import React, { useState } from 'react';
-import Card from '@mui/material/Card';
-import CardHeader from '@mui/material/CardHeader';
-import CardMedia from '@mui/material/CardMedia';
-import CardContent from '@mui/material/CardContent';
-import CardActions from '@mui/material/CardActions';
-import Avatar from '@mui/material/Avatar';
-import IconButton from '@mui/material/IconButton';
-import Typography from '@mui/material/Typography';
-import { blue } from '@mui/material/colors';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ShareIcon from '@mui/icons-material/Share';
-import { MoreHoriz } from '@mui/icons-material';
-import { useMutation } from '@tanstack/react-query';
-import { TextField, Button, List, ListItem, ListItemText } from '@mui/material';
+import React, { useState } from "react";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardMedia from "@mui/material/CardMedia";
+import CardContent from "@mui/material/CardContent";
+import CardActions from "@mui/material/CardActions";
+import Avatar from "@mui/material/Avatar";
+import IconButton from "@mui/material/IconButton";
+import Typography from "@mui/material/Typography";
+import { blue } from "@mui/material/colors";
+import FavoriteIcon from "@mui/icons-material/Favorite";
+import ShareIcon from "@mui/icons-material/Share";
+import { MoreHoriz } from "@mui/icons-material";
+import { useMutation } from "@tanstack/react-query";
+import { TextField, Button, List, ListItem, ListItemText } from "@mui/material";
 
-const Post = (props: { name: string; likes: number; image: string; id: string }) => {
-  const { id, name, likes, image } = props;
+const Post = (props: {
+  name: string;
+  likes: number;
+  image: string;
+  id: string;
+  comments: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  queryClient: any;
+}) => {
+  const { id, name, likes, image, comments } = props;
   const [totalLikes, setTotalLikes] = useState(likes);
-  const [color, setColor] = useState<'default' | 'success'>();
-  const [fontColor] = useState<'black' | 'white'>('black');
-  const [comments, setComments] = useState<string[]>([]);
-  const [comment, setComment] = useState<string>('');
+  const [color, setColor] = useState<"default" | "success">();
+  const [fontColor] = useState<"black" | "white">("black");
+  const [comment, setComment] = useState<string>("");
 
-  const mutation = useMutation({
+  const likesMutation = useMutation({
     mutationFn: async () => {
-      await fetch(`https://zexkx72ghe.execute-api.us-east-1.amazonaws.com/dev/v1/posts/${id}`, {
-        mode: 'no-cors',
-        method: 'POST',
-        headers: {
-          Accept: 'application/json',
-          'Content-Type': 'application/json'
+      await fetch(
+        `https://zexkx72ghe.execute-api.us-east-1.amazonaws.com/dev/v1/posts/${id}`,
+        {
+          mode: "no-cors",
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
         }
-      });
+      );
+    },
+  });
+
+  const commentsMutation = useMutation({
+    mutationFn: async (commentBody: string) => {
+      await fetch(
+        `https://zexkx72ghe.execute-api.us-east-1.amazonaws.com/dev/v1/posts/${id}/comments`,
+        {
+          mode: "no-cors",
+          method: "POST",
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            commentText: commentBody,
+          }),
+        }
+      );
+    },
+    onSuccess: () => {
+      props.queryClient.invalidateQueries(['posts']);
     }
   });
 
   const onLike = () => {
-    mutation.mutate();
-    setColor('success');
+    likesMutation.mutate();
+    setColor("success");
     setTotalLikes(totalLikes + 1);
   };
-
 
   const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setComment(event.target.value);
   };
 
   const handleCommentSubmit = () => {
-    if (comment.trim() !== '') {
-      setComments([...comments, comment]);
-      setComment('');
+    if (comment.trim() !== "") {
+      commentsMutation.mutate(comment);
+      setComment("");
     }
   };
 
@@ -58,12 +89,12 @@ const Post = (props: { name: string; likes: number; image: string; id: string })
       sx={{
         maxWidth: 700,
         width: 500,
-        display: 'flex',
-        flexDirection: 'column',
+        display: "flex",
+        flexDirection: "column",
         margin: 2,
-        backgroundColor: '#101010',
+        backgroundColor: "#101010",
         color: fontColor,
-        borderBottom: '2px solid #FFFFFF'
+        borderBottom: "2px solid #FFFFFF",
       }}
     >
       <CardHeader
@@ -74,26 +105,30 @@ const Post = (props: { name: string; likes: number; image: string; id: string })
         }
         action={
           <IconButton aria-label="settings">
-            <MoreHoriz sx={{ color: 'white' }} />
+            <MoreHoriz sx={{ color: "white" }} />
           </IconButton>
         }
-        sx={{ color: 'white' }}
+        sx={{ color: "white" }}
         title="Shrimp and Chorizo Paella"
         subheader="September 14, 2016"
       />
       <div
         style={{
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center'
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
         }}
       >
         <CardMedia
-          sx={{ maxWidth: 300, maxHeight: 300, borderRadius: '20px' }}
+          sx={{ maxWidth: 300, maxHeight: 300, borderRadius: "20px" }}
           component="img"
           width="700"
           height="500"
-          image={image ? image : 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Gragas_2.jpg'}
+          image={
+            image
+              ? image
+              : "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Gragas_2.jpg"
+          }
           alt="Paella dish"
         />
       </div>
@@ -103,7 +138,11 @@ const Post = (props: { name: string; likes: number; image: string; id: string })
         </Typography>
       </CardContent>
       <CardActions disableSpacing>
-        <IconButton aria-label="add to favorites" onClick={onLike} color={color === 'success' ? 'error' : 'default'}>
+        <IconButton
+          aria-label="add to favorites"
+          onClick={onLike}
+          color={color === "success" ? "error" : "default"}
+        >
           <FavoriteIcon />
           {totalLikes}
         </IconButton>
@@ -112,11 +151,13 @@ const Post = (props: { name: string; likes: number; image: string; id: string })
         </IconButton>
       </CardActions>
       <CardContent>
-        <Typography variant="h6" color="white">Comments</Typography>
+        <Typography variant="h6" color="white">
+          Comments
+        </Typography>
         <List>
-          {comments.map((comment, index) => (
+          {comments.map((comment: string, index: number) => (
             <ListItem key={index}>
-              <ListItemText primary={comment} sx={{ color: 'white' }} />
+              <ListItemText primary={comment} sx={{ color: "white" }} />
             </ListItem>
           ))}
         </List>
@@ -127,10 +168,14 @@ const Post = (props: { name: string; likes: number; image: string; id: string })
           value={comment}
           onChange={handleCommentChange}
           sx={{ mt: 2, mb: 2 }}
-          InputLabelProps={{ style: { color: 'white' } }}
-          InputProps={{ style: { color: 'white' } }}
+          InputLabelProps={{ style: { color: "white" } }}
+          InputProps={{ style: { color: "white" } }}
         />
-        <Button variant="contained" color="primary" onClick={handleCommentSubmit}>
+        <Button
+          variant="contained"
+          color="primary"
+          onClick={handleCommentSubmit}
+        >
           Add Comment
         </Button>
       </CardContent>

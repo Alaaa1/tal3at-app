@@ -12,14 +12,13 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ShareIcon from '@mui/icons-material/Share';
 import { MoreHoriz } from '@mui/icons-material';
 import { useMutation } from '@tanstack/react-query';
-import { Switch, TextField, Button, List, ListItem, ListItemText } from '@mui/material';
+import { TextField, Button, List, ListItem, ListItemText } from '@mui/material';
 
 const Post = (props: { name: string; likes: number; image: string; id: string }) => {
   const { id, name, likes, image } = props;
   const [totalLikes, setTotalLikes] = useState(likes);
   const [color, setColor] = useState<'default' | 'success'>();
-  const [postColor, setPostColor] = useState<'red' | 'black'>('black');
-  const [fontColor, setFontColor] = useState<'black' | 'white'>('black');
+  const [fontColor] = useState<'black' | 'white'>('black');
   const [comments, setComments] = useState<string[]>([]);
   const [comment, setComment] = useState<string>('');
 
@@ -70,7 +69,7 @@ const Post = (props: { name: string; likes: number; image: string; id: string })
       <CardHeader
         avatar={
           <Avatar sx={{ bgcolor: blue[500] }} aria-label="recipe">
-            R
+            Alaa
           </Avatar>
         }
         action={

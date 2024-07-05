@@ -6,7 +6,7 @@ import './App.css';
 import TopNavigation from './components/TopNavigation';
 import HomePage from './pages/homePage/HomePage';
 import Login from './pages/Login';
-import Register from './pages/register'; // Import the Register component
+import Register from './pages/register'; 
 
 
 const queryClient = new QueryClient();

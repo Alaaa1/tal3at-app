@@ -12,7 +12,6 @@ const Login = () => {
 
   const handleSubmit = (event: React.FormEvent) => {
     event.preventDefault();
-    // Handle login logic here
     console.log('Username:', username);
     console.log('Password:', password);
   };
@@ -80,7 +79,7 @@ const Login = () => {
           onClick={handleSignUpClick}
           sx={{ mt: 3, mb: 2 }}
         >
-          Already have an account?
+          New? SignUp NOW! or else..
         </Button>
       </Box>
     </Box>

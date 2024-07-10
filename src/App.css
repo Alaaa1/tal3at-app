@@ -1,6 +1,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Changa:wght@200..800&display=swap');
 
-body i {
+body a {
   font-family: 'Changa', cursive;
   background-color: black;
+  font-size: 25px;
 }

@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Post from "../../components/Post";
 import { useQuery } from "@tanstack/react-query";
+import NewPosts from "../../components/NewPosts";
 
 const HomePage = (props: {
   queryClient: any;
@@ -24,6 +25,9 @@ const HomePage = (props: {
     return <p>Loading...</p>;
   }
 
+  // Filter out the current posts from the data array 
+  const otherPosts = data.filter((post) => post.sk !== "post1" && post.sk !== "post2" && post.sk !== "post3");
+
   return (
     <div
       style={{
@@ -33,6 +37,7 @@ const HomePage = (props: {
         alignItems: "center",
       }}
     >
+      <NewPosts posts={otherPosts} queryClient={queryClient} />
       {data.map(
         (post: {
           author: string;
@@ -50,6 +55,8 @@ const HomePage = (props: {
             comments={post.comments}
             key={post.sk}
             queryClient={queryClient}
+
+            
           />
         )
       )}

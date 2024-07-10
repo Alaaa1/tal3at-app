@@ -1,22 +1,20 @@
-import React, { useState } from "react";
-import Card from "@mui/material/Card";
-import CardHeader from "@mui/material/CardHeader";
-import CardMedia from "@mui/material/CardMedia";
-import CardContent from "@mui/material/CardContent";
-import CardActions from "@mui/material/CardActions";
-import Avatar from "@mui/material/Avatar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import { blue } from "@mui/material/colors";
-import FavoriteIcon from "@mui/icons-material/Favorite";
-import ShareIcon from "@mui/icons-material/Share";
-import { MoreHoriz } from "@mui/icons-material";
-import { useMutation } from "@tanstack/react-query";
-import { TextField, Button, List, ListItem, ListItemText, Modal, Box } from "@mui/material";
-import icons from '../icons/icons'; 
+import React, { useState } from 'react';
+import Card from '@mui/material/Card';
+import CardHeader from '@mui/material/CardHeader';
+import CardMedia from '@mui/material/CardMedia';
+import CardActions from '@mui/material/CardActions';
+import Avatar from '@mui/material/Avatar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import { blue } from '@mui/material/colors';
+import FavoriteIcon from '@mui/icons-material/Favorite';
+import ShareIcon from '@mui/icons-material/Share';
+import { MoreHoriz } from '@mui/icons-material';
+import { useMutation } from '@tanstack/react-query';
+import { TextField, Button, List, ListItem, ListItemText, Modal, Box } from '@mui/material';
+import icons from '../icons/icons';
 
 const { CommIcon } = icons;
-
 
 const Post = (props: {
   name: string;
@@ -29,43 +27,39 @@ const Post = (props: {
 }) => {
   const { id, name, likes, image, comments } = props;
   const [totalLikes, setTotalLikes] = useState(likes);
-  const [color, setColor] = useState<"default" | "success">();
-  const [fontColor] = useState<"black" | "white">("black");
-  const [comment, setComment] = useState<string>("");
+  const [color, setColor] = useState<'default' | 'success'>();
+  const [fontColor] = useState<'black' | 'white'>('black');
+  const [comment, setComment] = useState<string>('');
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+
+  const env = import.meta.env;
 
   const likesMutation = useMutation({
     mutationFn: async () => {
-      await fetch(
-        `https://zexkx72ghe.execute-api.us-east-1.amazonaws.com/dev/v1/posts/${id}`,
-        {
-          mode: "no-cors",
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
+      await fetch(`${env.VITE_BASE_URL}/posts/${id}`, {
+        mode: 'no-cors',
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
         }
-      );
-    },
+      });
+    }
   });
 
   const commentsMutation = useMutation({
     mutationFn: async (commentBody: string) => {
-      await fetch(
-        `https://zexkx72ghe.execute-api.us-east-1.amazonaws.com/dev/v1/posts/${id}/comments`,
-        {
-          mode: "no-cors",
-          method: "POST",
-          headers: {
-            Accept: "application/json",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            commentText: commentBody,
-          }),
-        }
-      );
+      await fetch(`${env.VITE_BASE_URL}/posts/${id}/comments`, {
+        mode: 'no-cors',
+        method: 'POST',
+        headers: {
+          Accept: 'application/json',
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          commentText: commentBody
+        })
+      });
     },
     onSuccess: () => {
       props.queryClient.invalidateQueries(['posts']);
@@ -74,7 +68,7 @@ const Post = (props: {
 
   const onLike = () => {
     likesMutation.mutate();
-    setColor("success");
+    setColor('success');
     setTotalLikes(totalLikes + 1);
   };
 
@@ -83,9 +77,9 @@ const Post = (props: {
   };
 
   const handleCommentSubmit = () => {
-    if (comment.trim() !== "") {
+    if (comment.trim() !== '') {
       commentsMutation.mutate(comment);
-      setComment("");
+      setComment('');
     }
   };
 
@@ -103,11 +97,11 @@ const Post = (props: {
         sx={{
           maxWidth: 700,
           width: 500,
-          display: "flex",
-          flexDirection: "column",
-          backgroundColor: "#101010",
+          display: 'flex',
+          flexDirection: 'column',
+          backgroundColor: '#101010',
           color: fontColor,
-          borderBottom: "2px solid #FFFFFF",
+          borderBottom: '2px solid #FFFFFF'
         }}
       >
         <CardHeader
@@ -118,47 +112,39 @@ const Post = (props: {
           }
           action={
             <IconButton aria-label="settings">
-              <MoreHoriz sx={{ color: "white" }} />
+              <MoreHoriz sx={{ color: 'white' }} />
             </IconButton>
           }
-          sx={{ color: "white" }}
-          title= {name}
+          sx={{ color: 'white' }}
+          title={name}
           subheader="September 14, 2016"
         />
         <div
           style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center'
           }}
         >
           <CardMedia
-            sx={{ maxWidth: 300, maxHeight: 300, borderRadius: "20px" }}
+            sx={{ maxWidth: 300, maxHeight: 300, borderRadius: '20px' }}
             component="img"
             width="700"
             height="500"
-            image={
-              image
-                ? image
-                : "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Gragas_2.jpg"
-            }
+            image={image ? image : 'https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Gragas_2.jpg'}
             alt="Paella dish"
           />
         </div>
         <CardActions disableSpacing>
-          <IconButton
-            aria-label="add to favorites"
-            onClick={onLike}
-            color={color === "success" ? "error" : "default"}
-          >
+          <IconButton aria-label="add to favorites" onClick={onLike} color={color === 'success' ? 'error' : 'default'}>
             <FavoriteIcon />
             {totalLikes}
           </IconButton>
           <IconButton aria-label="share">
             <ShareIcon />
           </IconButton>
-          <Button onClick={handleModalOpen} sx={{ color: "white" }}>
-          <CommIcon color={'white'} />
+          <Button onClick={handleModalOpen} sx={{ color: 'white' }}>
+            <CommIcon color={'white'} />
           </Button>
         </CardActions>
       </Card>
@@ -170,19 +156,18 @@ const Post = (props: {
       >
         <Box
           sx={{
-            position: "absolute",
-            top: "50%",
-            left: "50%",
-            transform: "translate(-50%, -50%)",
+            position: 'absolute',
+            top: '50%',
+            left: '50%',
+            transform: 'translate(-50%, -50%)',
             width: 400,
-            bgcolor: "#101010",
-            border: "2px solid #000",
+            bgcolor: '#101010',
+            border: '2px solid #000',
             boxShadow: 24,
             p: 4,
-            color: "white",
+            color: 'white'
           }}
         >
-         
           <Typography id="comments-modal-title" variant="h6" component="h2">
             Comments
           </Typography>
@@ -200,14 +185,10 @@ const Post = (props: {
             value={comment}
             onChange={handleCommentChange}
             sx={{ mt: 2, mb: 2 }}
-            InputLabelProps={{ style: { color: "white" } }} // Change label color
-            InputProps={{ style: { color: "white" } }} // Change input text color
+            InputLabelProps={{ style: { color: 'white' } }} // Change label color
+            InputProps={{ style: { color: 'white' } }} // Change input text color
           />
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleCommentSubmit}
-          >
+          <Button variant="contained" color="primary" onClick={handleCommentSubmit}>
             Add Comment
           </Button>
         </Box>

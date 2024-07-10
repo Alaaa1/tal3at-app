@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Post from "../../components/Post";
 import { useQuery } from "@tanstack/react-query";
-import UserPosts from "../../components/UserPosts";
+import NewPosts from "../../components/NewPosts";
 
 const HomePage = (props: {
   queryClient: any;
@@ -37,7 +37,7 @@ const HomePage = (props: {
         alignItems: "center",
       }}
     >
-      <UserPosts posts={otherPosts} queryClient={queryClient} />
+      <NewPosts posts={otherPosts} queryClient={queryClient} />
       {data.map(
         (post: {
           author: string;

@@ -3,7 +3,7 @@ import { Box, Button, IconButton, Typography, TextField } from "@mui/material";
 import PhotoCameraIcon from "@mui/icons-material/PhotoCamera";
 import Post from "./Post"; // Adjust the path based on your actual file structure
 
-const UserPosts = ({ queryClient }: { queryClient: any }) => {
+const NewPosts = ({ queryClient }: { queryClient: any }) => {
   const [posts, setPosts] = useState<
     { name: string; image: string; id: string; author: string; likes: number; comments: string[]; sk: string }[]
   >([]);
@@ -131,7 +131,7 @@ const UserPosts = ({ queryClient }: { queryClient: any }) => {
         </Box>
       </form>
       
-     {/* {posts.map((post) => (
+    {posts.map((post) => (
         <Post
           name={post.author}
           likes={post.likes}
@@ -141,9 +141,9 @@ const UserPosts = ({ queryClient }: { queryClient: any }) => {
           key={post.sk}
           queryClient={queryClient}
         />
-      ))}  */} 
+      ))} 
     </Box>
   );
 };
 
-export default UserPosts;
+export default NewPosts;
